@@ -42,7 +42,7 @@ const fetchNextApiData = () => {
 function ApiDataDisplay1( ) {
     return (
       <Html position={[0, 0, 0]} transform>
-        <button onClick={()=>{setModalFun()}}>
+        <button >
           Click Next
         </button>
         <input />
@@ -65,23 +65,10 @@ function ApiDataDisplay1( ) {
   }
 
 return(<>
-
-
 <ApiDataDisplay data={apiData} isLoading={isLoading}/>
 {/* <ApiDataDisplay1/>   */}
-
-
-
-
 </>)
-
-
-
-
-
 }
-
-
 export default Question;
 
 
