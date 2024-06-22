@@ -32,7 +32,7 @@ const fetchNextApiData = () => {
       setApiData(data);
       setIsLoading(false);
     })
-    .catch(error => {apiData
+    .catch(error => {
       console.error('Error fetching next data:', error);
       setIsLoading(false);
     });
