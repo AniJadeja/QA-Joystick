@@ -26,7 +26,7 @@ const Character = ({ camera }) => {
   const acceleration = new THREE.Vector3(1, 0.125, 100.0);
   const velocity = new THREE.Vector3(0, 0, 0);
 
-  const c = useLoader(FBXLoader, "./character/suiteman.fbx");
+  const c = useLoader(FBXLoader, "./character/character.fbx");
   c.rotation.y = Math.PI;
   c.position.x = 1.5;
   c.position.z = -3.5
@@ -38,13 +38,13 @@ const Character = ({ camera }) => {
 
   const mixer = new THREE.AnimationMixer(c);
 
-  const idle = useFBX("./character/Suitmanidle_01.fbx");
+  const idle = useFBX("./character/Idle.fbx");
 
   animations["idle"] = {
     clip: mixer.clipAction(idle.animations[0]),
   };
 
-  const walk = useFBX("./character/SuitmanWalking_01.fbx");
+  const walk = useFBX("./character/walking.fbx");
 
   animations["walk"] = {
     clip: mixer.clipAction(walk.animations[0]),
