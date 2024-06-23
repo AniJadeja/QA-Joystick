@@ -98,7 +98,7 @@ const Question = () => {
 
   function ApiDataDisplay({ data, isLoading }) {
     return (
-      <Html position={[0.2, -0.2, 0]} transform>
+      <Html position={[0.2, -0.3, 0]} transform>
         {isLoading ? (
           <div style={{ color: "white", fontSize: "18px" }}>Loading...</div>
         ) : (
@@ -130,7 +130,25 @@ const Question = () => {
                   <strong>Question:</strong> {data.question} ?
                 </p>
                 <p aria-label="element">
-                  <strong>Answer : </strong> {data.answers.answer}
+                  <strong>Answers : </strong> 
+                </p>
+                <p
+                  aria-label="element"
+                  style={{
+                    display:'inline',
+                    backgroundColor: "rgba(128, 128, 128, 0.3)",
+                    boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.3), 4px 4px 10px rgba(0, 0, 0, 0.5)",
+                    maxWidth: "fit-content",
+                    borderRadius: "10px",
+                    padding: "5px",
+                  }}
+                >
+                  {data.answers.pname} 
+                </p>
+                <p style={{
+                  display:'inline'
+                }}>
+                &nbsp;:&nbsp;&nbsp;{data.answers.answer}
                 </p>
 
                 <div
