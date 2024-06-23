@@ -1,79 +1,90 @@
-import { useState,useEffect } from "react";
+// Question.jsx
+
+import { useState, useEffect } from "react";
 import { Html } from "@react-three/drei";
-const Question=()=>{
+import { getQuestionFromURL, updateURLWithQuestion } from "../utils/browserUtils";
 
-const [apiData, setApiData] = useState([]);
-const [isLoading, setIsLoading] = useState(true);
+const Question = () => {
+  const [apiData, setApiData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [question, setQuestion] = useState("");
+  // new use state for data object only
+  
 
-useEffect(() => {
-  // Fetch data from the initial API
-  fetch('https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=Which-city-is-known-as-the-Pink-City')
-    .then(response => response.json())
-    .then(data => {
-        console.log("data",data)
-      setApiData(data);
-      setIsLoading(false);
-    })
-    .catch(error => {
-      
-      setApiData(["Error While Fetcing Data"])
-      console.error( error)
-    
-    
-    });
-}, []);
-
-const fetchNextApiData = () => {
-  setIsLoading(true);
-  // Fetch data from the next API endpoint
-  fetch('https://jsonplaceholder.typicode.com/posts')
-    .then(response => response.json())
-    .then(data => {
-      setApiData(data);
-      setIsLoading(false);
-    })
-    .catch(error => {
-      console.error('Error fetching next data:', error);
-      setIsLoading(false);
-    });
-};
+  
 
 
-function ApiDataDisplay1( ) {
-    return (
-      <Html position={[0, 0, 0]} transform>
-        <button >
-          Click Next
-        </button>
-        <input />
-      </Html>
-    );
-  }
+  useEffect(() => {
+    const urlQuestion = getQuestionFromURL();
+    if (urlQuestion) {
+      setQuestion(urlQuestion);
+      fetchQuestionData(urlQuestion);
+    } else {
+      // Default question if none in URL
+      const defaultQuestion = "Which-city-is-known-as-the-Pink-City";
+      setQuestion(defaultQuestion);
+      fetchQuestionData(defaultQuestion);
+    }
+  }, []);
+
+  const fetchQuestionData = (que) => {
+    setIsLoading(true);
+    fetch(`https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${encodeURIComponent(que)}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("data", data);
+        setApiData(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setApiData({ error: "Error While Fetching Data" });
+        console.error(error);
+        setIsLoading(false);
+      });
+  };
+
+  const handleQuestionSubmit = (e) => {
+    e.preventDefault();
+    updateURLWithQuestion(question);
+    fetchQuestionData(question);
+  };
 
   function ApiDataDisplay({ data, isLoading }) {
     return (
       <Html position={[0, 0, 0]} transform>
-        {!isLoading ? (
+        {isLoading ? (
           <div style={{ color: 'white', fontSize: '18px' }}>Loading...</div>
         ) : (
-          <div  /* onClick={(e)=>{localStorage.setItem("modal",true)}} */  style={{ maxHeight: '134px',width:"247px", overflowY: 'auto', color: 'white' }}>
-           <p>{apiData}</p>
+          <div style={{ maxHeight: '134px', width: "247px", overflowY: 'auto', color: 'white' }}>
+            {data ? (
+              <>
+                <p><strong>Question:</strong> {data.question}</p>
+                <p><strong>Asker:</strong> {data.asker}</p>
+                <p><strong>Date:</strong> {data.date}</p>
+              </>
+            ) : (
+              <p>No data available</p> 
+            )}
+
           </div>
         )}
+        <form onSubmit={handleQuestionSubmit}>
+          <input 
+            type="text" 
+            value={question} 
+            onChange={(e) => setQuestion(e.target.value)}
+            style={{ color: 'black' }}
+          />
+          <button type="submit">Submit Question</button>
+        </form>
       </Html>
     );
   }
 
-return(<>
-<ApiDataDisplay data={apiData} isLoading={isLoading}/>
-{/* <ApiDataDisplay1/>   */}
-</>)
-}
+  return (
+    <ApiDataDisplay data={apiData} isLoading={isLoading} />
+  );
+};
+
 export default Question;
-
-
-
-
-  
-
 
