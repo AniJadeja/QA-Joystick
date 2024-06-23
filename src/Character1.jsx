@@ -4,9 +4,6 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { useFBX } from "@react-three/drei";
 import * as THREE from "three";
 
-import { Mesh } from "three";
-
-
 export const activeAnimation= {
  
   forward: false,
@@ -29,10 +26,10 @@ const Character = ({ camera }) => {
   const acceleration = new THREE.Vector3(1, 0.125, 100.0);
   const velocity = new THREE.Vector3(0, 0, 0);
 
-  const c = useLoader(FBXLoader, "./character/character2.fbx");
-console.log("ccccccccccc",c.node)
-  
-
+  const c = useLoader(FBXLoader, "./character/suiteman.fbx");
+  c.rotation.y = Math.PI;
+  c.position.x = 1.5;
+  c.position.z = -3.5
   c.scale.setScalar(0.01);
   c.traverse((f) => {
     f.castShadow = true;
@@ -41,13 +38,13 @@ console.log("ccccccccccc",c.node)
 
   const mixer = new THREE.AnimationMixer(c);
 
-  const idle = useFBX("./character/Idle.fbx");
+  const idle = useFBX("./character/Suitmanidle_01.fbx");
 
   animations["idle"] = {
     clip: mixer.clipAction(idle.animations[0]),
   };
 
-  const walk = useFBX("./character/walking.fbx");
+  const walk = useFBX("./character/SuitmanWalking_01.fbx");
 
   animations["walk"] = {
     clip: mixer.clipAction(walk.animations[0]),
@@ -79,8 +76,7 @@ console.log("ccccccccccc",c.node)
         break;
 
       case 83: //s
-        activeAnimation.backward = true;
-
+        activeAnimation.backward = true; 
         break;
 
       case 68: // d
@@ -134,6 +130,8 @@ console.log("ccccccccccc",c.node)
     idealLookat.add(character.current.position);
     return idealLookat;
   };
+
+
 
   function updateCameraTarget(delta) {
     const idealOffset = calculateIdealOffset();

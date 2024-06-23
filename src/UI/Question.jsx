@@ -29,7 +29,10 @@ const Question = () => {
 
   const fetchQuestionData = (que) => {
     setIsLoading(true);
-    fetch(`https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${encodeURIComponent(que)}`)
+    let encodedQue = encodeURIComponent(que);
+    encodedQue = encodedQue.replace(/%20/g, "-");
+    console.log("Encoded que : ", encodedQue)
+    fetch(`https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${que}`)
       .then(response => response.json())
       .then(data => {
         console.log("data", data);
