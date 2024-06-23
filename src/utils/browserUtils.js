@@ -1,12 +1,16 @@
 // browserUtils.js
 
-export function getQuestionFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const question = urlParams.get('que');
-    return question ? decodeURIComponent(question.replace(/-/g, ' ')) : null;
-  }
-  
-  export function updateURLWithQuestion(question) {
-    const encodedQuestion = encodeURIComponent(question.replace(/\s+/g, '-'));
-    window.history.pushState({}, '', `/?que=${encodedQuestion}`);
-  }
+export const getQuestionFromURL = () => {
+  const path = window.location.pathname;
+  // Remove the leading slash and decode the URL
+  const question = decodeURIComponent(path.slice(1));
+  // Replace hyphens with spaces
+  return question.replace(/-/g, ' ');
+};
+
+export const updateURLWithQuestion = (question) => {
+  // Replace spaces with hyphens and encode the question
+  const encodedQuestion = encodeURIComponent(question.replace(/ /g, '-'));
+  const newUrl = `/${encodedQuestion}`;
+  window.history.pushState({}, '', newUrl);
+};
