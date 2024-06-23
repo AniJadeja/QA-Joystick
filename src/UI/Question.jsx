@@ -157,13 +157,16 @@ export default Question;
 
 import { useState, useEffect } from "react";
 import { Html } from "@react-three/drei";
-import { getQuestionFromURL, updateURLWithQuestion } from "../utils/browserUtils";
-
+import {
+  getQuestionFromURL,
+  updateURLWithQuestion,
+} from "../utils/browserUtils";
+import "./button.css";
 const Question = () => {
   const [apiData, setApiData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [question, setQuestion] = useState("");
-  const [answerData, setAnswerData] = useState({error:"No answer"});
+  const [answerData, setAnswerData] = useState({ error: "No answer" });
 
   useEffect(() => {
     const urlQuestion = getQuestionFromURL();
@@ -184,32 +187,36 @@ const Question = () => {
     encodedQue = encodedQue.replace(/%20/g, "-");
     console.log("Encoded que : ", encodedQue);
 
-    fetch(`https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${que}`)
-      .then(response => response.json())
-      .then(data => {
+    fetch(
+      `https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${que}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
         // Fetch the answers using the question ID
-        fetch(`https://bermudaunicorn.com/api/beuapi.php?type=fetchanswers&questionId=${data.id}`)
-          .then(res => res.json())
-          .then(answerData => {
+        fetch(
+          `https://bermudaunicorn.com/api/beuapi.php?type=fetchanswers&questionId=${data.id}`
+        )
+          .then((res) => res.json())
+          .then((answerData) => {
             console.log("Answer : ", answerData);
             // Combine question data and answer data
             const combinedData = {
               ...data,
-              answers: answerData
+              answers: answerData,
             };
 
             // Update the state with the combined data
             setApiData(combinedData);
             setIsLoading(false);
           })
-          .catch(err => {
+          .catch((err) => {
             setIsLoading(false);
             console.log(err);
             throw new Error(err);
           });
         console.log("Data : ", data);
       })
-      .catch(error => {
+      .catch((error) => {
         setApiData({ error: "Error While Fetching Data" });
         console.error(error);
         setIsLoading(false);
@@ -226,48 +233,77 @@ const Question = () => {
     return (
       <Html position={[0.2, -0.2, 0]} transform>
         {isLoading ? (
-          <div style={{ color: 'white', fontSize: '18px' }}>Loading...</div>
+          <div style={{ color: "white", fontSize: "18px" }}>Loading...</div>
         ) : (
-          <div style={{ maxHeight: '534px', width: "247px", overflowY: 'auto', color: 'white', fontSize: '10px' }}>
+          <div
+            style={{
+              maxHeight: "534px",
+              width: "247px",
+              overflowY: "auto",
+              color: "white",
+              fontSize: "10px",
+            }}
+          >
             {data ? (
               <>
-                <p aria-label="element"
+                <p
+                  aria-label="element"
                   style={{
-                    backgroundColor: 'rgba(128, 128, 128, 0.3)', // RGBA grey with 80% opacity
-                    boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)', // Text shadow for 3D effect
-                    boxShadow: '4px 4px 10px rgba(0, 0, 0, 0.5)', // Box shadow for 3D effect
-                    maxWidth: 'fit-content',
-                    borderRadius: '10px', // Rounded borders
-                    padding: '5px'
+                    backgroundColor: "rgba(128, 128, 128, 0.3)", // RGBA grey with 80% opacity
+                    boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)", // Text shadow for 3D effect
+                    boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.5)", // Box shadow for 3D effect
+                    maxWidth: "fit-content",
+                    borderRadius: "10px", // Rounded borders
+                    padding: "5px",
                   }}
                 >
                   {data.asker}
                 </p>
-                {
-                  console.log("Accessed data : ", data)
-                }
-                <p aria-label="element"><strong>Question:</strong> {data.question} ?</p>
-                <p aria-label="element" ><strong>Answer : </strong> {data.answers.answer}</p>
-                <button
+                {console.log("Accessed data : ", data)}
+                <p aria-label="element">
+                  <strong>Question:</strong> {data.question} ?
+                </p>
+                <p aria-label="element">
+                  <strong>Answer : </strong> {data.answers.answer}
+                </p>
+
+                <div
                   style={{
-                    maxWidth:'80px',
-                    fontSize:'10px',
-                     marginTop:'50px',
-                    marginLeft:'80px'
+                    display:'flex',
+                    marginLeft:"120px",
+                    marginTop:"50px"
                   }}
                 >
-                  Ask Question
+
+                
+                <button
+                  style={{
+                    maxWidth: "90px",
+                    fontSize: "8px",
+                    maxHeight:"25px",
+                    padding:"10px"
+                  }}
+                  class="button-30"
+                  role="button"
+                >
+                  Ask question
                 </button>
 
                 <button
-                style={{
-                  maxWidth:'80px',
-                  fontSize:'10px',
-                  marginLeft:'10px'
-                 
-                }}>
+                  style={{
+                   
+                    maxWidth: "90px",
+                    fontSize: "8px",
+                    marginLeft: "10px",
+                    maxHeight:"25px",
+                    padding:"10px"
+                  }}
+                  class="button-30"
+                  role="button"
+                >
                   Give Answer
                 </button>
+                </div>
               </>
             ) : (
               <p>No data available</p>
@@ -278,9 +314,7 @@ const Question = () => {
     );
   }
 
-  return (
-    <ApiDataDisplay data={apiData} isLoading={isLoading} />
-  );
+  return <ApiDataDisplay data={apiData} isLoading={isLoading} />;
 };
 
 export default Question;
