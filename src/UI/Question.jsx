@@ -224,14 +224,14 @@ const Question = () => {
 
   function ApiDataDisplay({ data, isLoading }) {
     return (
-      <Html position={[0.2, 0.8, 0]} transform>
+      <Html position={[0.2, -0.2, 0]} transform>
         {isLoading ? (
           <div style={{ color: 'white', fontSize: '18px' }}>Loading...</div>
         ) : (
-          <div style={{ maxHeight: '134px', width: "247px", overflowY: 'auto', color: 'white', fontSize: '10px' }}>
+          <div style={{ maxHeight: '534px', width: "247px", overflowY: 'auto', color: 'white', fontSize: '10px' }}>
             {data ? (
               <>
-                <p
+                <p aria-label="element"
                   style={{
                     backgroundColor: 'rgba(128, 128, 128, 0.3)', // RGBA grey with 80% opacity
                     boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)', // Text shadow for 3D effect
@@ -246,8 +246,28 @@ const Question = () => {
                 {
                   console.log("Accessed data : ", data)
                 }
-                <p><strong>Question:</strong> {data.question} ?</p>
-                <p><strong>Answer : </strong> {data.answers.answer}</p>
+                <p aria-label="element"><strong>Question:</strong> {data.question} ?</p>
+                <p aria-label="element" ><strong>Answer : </strong> {data.answers.answer}</p>
+                <button
+                  style={{
+                    maxWidth:'80px',
+                    fontSize:'10px',
+                     marginTop:'50px',
+                    marginLeft:'80px'
+                  }}
+                >
+                  Ask Question
+                </button>
+
+                <button
+                style={{
+                  maxWidth:'80px',
+                  fontSize:'10px',
+                  marginLeft:'10px'
+                 
+                }}>
+                  Give Answer
+                </button>
               </>
             ) : (
               <p>No data available</p>
