@@ -1,6 +1,6 @@
 // App.js
 
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -12,6 +12,7 @@ import Question from "./UI/Question";
 import Nipple from 'react-nipple';
 import { Html, Text as DreiText, Loader } from '@react-three/drei';
 import { activeAnimation } from "./Character1";
+import Popup from "./UI/Popup/Popup";
 
 function Hall() {
   const { scene } = useGLTF('./hallwb.glb', true);  // Use true to automatically resolve the scene
@@ -99,10 +100,14 @@ function App() {
   light.shadow.camera.bottom = -50;
 
 
-
+  const [showPopup2, setShowPopup2] = useState(true);
 
   return (
     <div className="w-full h-screen bg-fuchsia-100">
+      <button onClick={() => setShowPopup2(true)}>Open Popup</button>
+        {showPopup2 && (
+          <Popup name="Sameer" onClose={() => setShowPopup2(false)} />
+        )}
       <Canvas shadows camera={camera} style={{ height: "100vh" }} >
 
         <hemisphereLight {...hemiLight} />/
