@@ -57,7 +57,7 @@ const Popup = ({ name, onClose }) => {
         onChange={(e) => setInputText(e.target.value)}
       />
       <div className="footer">
-        <span className="word-count">{wordCount}/100</span>
+        <span className="word-count">{wordCount}/70</span>
         <button className="post-button" onClick={handlePost}>
           POST →
         </button>
