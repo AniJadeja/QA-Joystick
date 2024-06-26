@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Popup.css"; // You'll need to create this CSS file
+import arrow from '../../Assets/arrow.svg'
+import { rotate } from "three/examples/jsm/nodes/Nodes.js";
 
 const Popup = ({ name, onClose }) => {
   const [selectedOption, setSelectedOption] = useState("ask");
@@ -18,10 +20,12 @@ const Popup = ({ name, onClose }) => {
 
   return (
     <div className="popup">
+     
+      <div className="header">
       <button className="close-button" onClick={onClose}>
       </button>
-      <div className="header">
-        <button
+      <div className="navButtons">
+      <button
           className={`option ${selectedOption === "ask" ? "active" : ""}`}
           onClick={() => setSelectedOption("ask")}
         >
@@ -33,10 +37,16 @@ const Popup = ({ name, onClose }) => {
         >
           Post an Answer
         </button>
+      </div>
+        
         <div className={`slider ${selectedOption}`}></div>
       </div>
       <div className="content">
         <div className="avatar">{name[0].toUpperCase()}</div>
+        <img alt="name highlight arrow" src={arrow} height={30} width={30} style={{
+            transform:' rotate(90deg)',
+            marginRight: '5px'
+        }} />
         <p>{name}</p>
       </div>
       <textarea
