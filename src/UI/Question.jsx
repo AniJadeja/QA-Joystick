@@ -37,6 +37,42 @@ const Question = () => {
     let encodedQue = encodeURIComponent(que);
     encodedQue = encodedQue.replace(/%20/g, "-");
     console.log("Encoded que : ", encodedQue);
+
+
+    fetch(
+      `https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${que}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        // Fetch the answers using the question ID
+        fetch(
+          `https://bermudaunicorn.com/api/beuapi.php?type=fetchanswers&questionId=${data.id}`
+        )
+          .then((res) => res.json())
+          .then((answerData) => {
+            console.log("Answer : ", answerData);
+            // Combine question data and answer data
+            const combinedData = {
+              ...data,
+              answers: answerData,
+            };
+
+            // Update the state with the combined data
+            setApiData(combinedData);
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            setIsLoading(false);
+            console.log(err);
+            throw new Error(err);
+          });
+        console.log("Data : ", data);
+      })
+      .catch((error) => {
+        setApiData({ error: "Error While Fetching Data" });
+        console.error(error);
+        setIsLoading(false);
+      });
   };
 
   const handleQuestionSubmit = (e) => {
