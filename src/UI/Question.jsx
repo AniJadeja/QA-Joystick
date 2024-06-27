@@ -14,8 +14,6 @@ const Question = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [question, setQuestion] = useState("");
   const [answerData, setAnswerData] = useState({ error: "No answer" });
-  const [popupType, setPopupType] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
 
   const [inputValue, setInputValue] = useState("");
 
@@ -38,29 +36,39 @@ const Question = () => {
     encodedQue = encodedQue.replace(/%20/g, "-");
     console.log("Encoded que : ", encodedQue);
 
-
     fetch(
       `https://bermudaunicorn.com/api/beuapi.php?type=fetchquestion&que=${que}`
     )
-      .then((response) => response.json())
+      .then((response) =>
+        
+        response.json())
       .then((data) => {
         // Fetch the answers using the question ID
         fetch(
           `https://bermudaunicorn.com/api/beuapi.php?type=fetchanswers&questionId=${data.id}`
+          //`https://bermudaunicorn.com/api/beuapi.php?type=fetchanswers&questionId=1`
         )
-          .then((res) => res.json())
-          .then((answerData) => {
-            console.log("Answer : ", answerData);
-            // Combine question data and answer data
-            const combinedData = {
-              ...data,
-              answers: answerData,
-            };
-
-            // Update the state with the combined data
-            setApiData(combinedData);
-            setIsLoading(false);
-          })
+        .then((res) => {
+          console.log("Response of Answer : ", typeof(res));
+          return res.text(); // Get the response as text instead of JSON
+        })
+        .then((text) => {
+          // Process the text response
+          const jsonStrings = text.match(/\{[^}]+\}/g);
+          const answerData = jsonStrings.map(jsonString => JSON.parse(jsonString));
+          
+          console.log("Answer : ", answerData);
+          
+          // Combine question data and answer data
+          const combinedData = {
+            ...data,
+            answers: answerData,
+          };
+      
+          // Update the state with the combined data
+          setApiData(combinedData);
+          setIsLoading(false);
+        })
           .catch((err) => {
             setIsLoading(false);
             console.log(err);
@@ -75,34 +83,9 @@ const Question = () => {
       });
   };
 
-  const handleQuestionSubmit = (e) => {
-    e.preventDefault();
-    updateURLWithQuestion(question);
-    fetchQuestionData(question);
-  };
-
-  const handleButtonClick = (type) => {
-    setPopupType(type);
-    setShowPopup(true);
-  };
-
-  const handlePopupSubmit = (e) => {
-    e.preventDefault();
-    console.log(`Submitted ${popupType}: ${inputValue}`);
-    setShowPopup(false);
-    setInputValue("");
-    // Here you can add logic to handle the submission based on popupType
-  };
-
-  const closePopup = useCallback(() => {
-    setShowPopup(false);
-    setInputValue("");
-  }, []);
-
   function ApiDataDisplay({ data, isLoading }) {
     return (
       <Html position={[0.2, -0.3, 0]} transform>
-        
         {isLoading ? (
           <div style={{ color: "white", fontSize: "18px" }}>Loading...</div>
         ) : (
@@ -151,153 +134,21 @@ const Question = () => {
                 >
                   {data.answers.pname}
                 </p>
-                <p
-                  style={{
-                    display: "inline",
-                  }}
-                >
-                  &nbsp;:&nbsp;&nbsp;{data.answers.answer}
-                </p>
 
-                <div
-                  style={{
-                    display: "flex",
-                    marginLeft: "120px",
-                    marginTop: "50px",
-                  }}
-                >
-                  <button
+                {data && (
+                  <p
                     style={{
-                      maxWidth: "90px",
-                      fontSize: "8px",
-                      maxHeight: "25px",
-                      backgroundColor: "rgba(128,128,128,1)",
+                      display: "inline",
                     }}
-                    className="button-30"
-                    role="button"
-                    onClick={() => handleButtonClick("question")}
                   >
-                    Ask question
-                  </button>
-
-                  <button
-                    style={{
-                      maxWidth: "90px",
-                      fontSize: "8px",
-                      marginLeft: "10px",
-                      maxHeight: "25px",
-                      backgroundColor: "rgba(128,128,128,1)",
-                    }}
-                    className="button-30"
-                    role="button"
-                    onClick={() => handleButtonClick("answer")}
-                  >
-                    Give Answer
-                  </button>
-                </div>
+                    {}
+                    &nbsp;:&nbsp;&nbsp;{ data.answers.answer}
+                  </p>
+                )}
               </>
             ) : (
               <p>No data available</p>
             )}
-          </div>
-        )}
-
-        {showPopup && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1000,
-            }}
-            onClick={closePopup}
-          >
-            <div
-              style={{
-                backgroundColor: "rgba(128,128,128,0.9)",
-                borderRadius: "20px",
-                padding: "20px",
-
-                width: "300px",
-                position: "relative",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={closePopup}
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  background: "none",
-                  border: "none",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                ×
-              </button>
-              <h2
-                style={{
-                  textAlign: "center",
-                  color: "#fff",
-                  marginBottom: "20px",
-                }}
-              >
-                {popupType === "question" ? "Ask a Question" : "Give an Answer"}
-              </h2>
-              <form
-                onSubmit={handlePopupSubmit}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder={
-                    popupType === "question"
-                      ? "Enter your question"
-                      : "Enter your answer"
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    margin: "10px 0",
-                    border: "none",
-                    borderRadius: "10px",
-                    backgroundColor: "rgba(128,128,128,0.9)",
-                    boxShadow:
-                      "inset 5px 5px 10px rgba(255,255,255,0.2), inset -5px -5px 10px rgba(128,128,128,1)",
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: "10px",
-                    backgroundColor: "rgba(128,128,128,0.9)",
-                    boxShadow:
-                      "5px 5px 10px rgba(255,255,255,0.2), -5px -5px 10px rgba(128,128,128,1)",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    marginTop: "20px",
-                  }}
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
           </div>
         )}
       </Html>
